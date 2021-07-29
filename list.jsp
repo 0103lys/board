@@ -31,7 +31,7 @@
          totalCount = rs.getInt("total");
       }
       
-      sql = "select b_idx, b_userid, b_title, b_regdate, b_hit, b_like from tb_board order by b_idx desc limit ?,?";
+      sql = "select b_idx, b_userid, b_title, b_regdate, b_hit, b_like, b_file from tb_board order by b_idx desc limit ?,?";
       
       /* 
       		select *from tb_board order by b_idx desc limit 0, 10; : 0부터 10개 맨 뒤에부터(최신글 10개)
@@ -74,10 +74,17 @@
       String b_regdate = rs.getString("b_regdate").substring(0, 10);
       String b_hit = rs.getString("b_hit");
       String b_like = rs.getString("b_like");
+      String b_file = rs.getString("b_file");
+      
       Date date = new Date();
       SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
       String time = (String)simpleDate.format(date);
       String update_time = b_regdate.substring(0,10);
+      
+      String fileStr = "";
+      if(b_file != null && !b_file.equals("")){
+    	  fileStr = "<img src='./file.png' alt='파일'>";
+      }
       
       /* 현재 글에 대한 count  */
       sql = "select count(re_idx) as replycnt from tb_reply where re_boardidx=?";
@@ -100,7 +107,7 @@
       <tr>
          <td><%=b_idx%></td>
          <!-- 게시물 idx (글번호) 를 가져옴 -->
-         <td><a href="./view.jsp?b_idx=<%=b_idx%>"><%=b_title%></a> [<%=replycnt%>] 
+         <td><a href="./view.jsp?b_idx=<%=b_idx%>"><%=b_title%></a> [<%=replycnt%>] <%=fileStr%>
          <% 
          	if(time.equals(update_time)){
          %>
